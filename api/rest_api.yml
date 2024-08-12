@@ -12,7 +12,7 @@ info:
   version: 1.0.0
 
 paths:
-  /post:
+  /posts:
     post:
       summary: Create a post
       description: Method creates a post
@@ -59,7 +59,7 @@ paths:
         500:
           description: Server error
 
-  /post/{id}:
+  /posts/{id}:
     get:
       summary: Get a post
       description: Get an existing post
@@ -127,14 +127,14 @@ paths:
         500:
           description: Server error
 
-  /post/update/{id}:
+  /posts/{post_id}:
     put:
       summary: Update a post
       description: Update an existing post
       tags:
         - Posts
       parameters:
-        - name: id
+        - name: post_id
           in: path
           required: true
           description: Post id
@@ -191,14 +191,14 @@ paths:
         500:
           description: Server error
 
-  /post/delete/{id}:
+  /posts/{remove_post_id}:
     delete:
       summary: Delete a post
       description: Delete an existing post
       tags:
         - Posts
       parameters:
-        - name: id
+        - name: remove_post_id
           in: path
           required: true
           description: Post id
@@ -292,7 +292,7 @@ paths:
         500:
           description: Server error
 
-  /subscriptions/unsubscribe/{subscriber_id}/{subscription_id}:
+  /subscriptions/{subscriber_id}/{subscription_id}:
     delete:
       summary: Unsubscribe from a user
       description: Unsubscribe from a user
@@ -326,7 +326,7 @@ paths:
         500:
           description: Server error
 
-  /comment:
+  /comments:
     post:
       summary: Create a comment
       description: Method creates a comment
@@ -380,31 +380,6 @@ paths:
         500:
           description: Server error
 
-  /comment/{id}:
-    get:
-      summary: Get a comment
-      description: Get an existing comment
-      tags:
-        - Comments
-      parameters:
-        - name: id
-          in: path
-          required: true
-          description: Comment id
-          schema:
-            type: string
-      responses:
-        200:
-          description: OK
-          content:
-            application/json:
-              schema:
-                $ref: "#/components/schemas/Comment"
-        404:
-          description: Not found
-        500:
-          description: Server error
-
   /comments/{post_id}:
     get:
       summary: Get bunch of comments
@@ -453,7 +428,7 @@ paths:
         500:
           description: Server error
 
-  /comment/update/{id}:
+  /comments/{id}:
     put:
       summary: Update a comment
       description: Update an existing comment
@@ -502,14 +477,14 @@ paths:
         500:
           description: Server error
 
-  /comment/delete/{id}:
+  /comments/{remove_post_id}:
     delete:
       summary: Delete a comment
       description: Delete an existing comment
       tags:
         - Comments
       parameters:
-        - name: id
+        - name: remove_post_id
           in: path
           required: true
           description: Comment id
@@ -537,7 +512,7 @@ paths:
         500:
           description: Server error
 
-  /rating:
+  /ratings:
     post:
       summary: Add a rating
       description: Method creates a post rating
@@ -591,7 +566,7 @@ paths:
         500:
           description: Server error
 
-  /rating/update/{id}:
+  /ratings/{id}:
     put:
       summary: Update a rating
       description: Update an existing rating
@@ -640,14 +615,14 @@ paths:
         500:
           description: Server error
 
-  /rating/delete/{id}:
+  /ratings/{remove_rating_id}:
     delete:
       summary: Delete a rating
       description: Delete an existing rating
       tags:
         - Ratings
       parameters:
-        - name: id
+        - name: remove_rating_id
           in: path
           required: true
           description: Post id
