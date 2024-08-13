@@ -1,0 +1,684 @@
+openapi: 3.0.0
+
+tags:
+  - name: Posts
+  - name: Subscriptions
+  - name: Ratings
+  - name: Comments
+
+info:
+  title: Adventure Network API
+  description: Current API describes interaction with Adventure Network
+  version: 1.0.0
+
+paths:
+  /posts:
+    post:
+      summary: Create a post
+      description: Method creates a post
+      tags:
+        - Posts
+      requestBody:
+        required: true
+        content:
+          application/json:
+            schema:
+              allOf:
+                - $ref: "#/components/schemas/Post"
+                - required:
+                    - text
+                    - image
+            examples:
+              request:
+                value:
+                  text: "Adventure description"
+                  geolocation: "51.51415,-0.11473"
+                  user_id: "674"
+          multipart/form:
+            schema:
+              $ref: "#/components/schemas/PostImage"
+      responses:
+        200:
+          description: Ok
+          content:
+            application/json:
+              schema:
+                type: object
+                properties:
+                  id:
+                    type: string
+                    description: id of the created post
+                required:
+                  - id
+              examples:
+                response:
+                  value:
+                    id: "67687sde432d"
+        400:
+          description: Bad Request
+        500:
+          description: Server error
+
+  /posts/{id}:
+    get:
+      summary: Get a post
+      description: Get an existing post
+      tags:
+        - Posts
+      parameters:
+        - name: id
+          in: path
+          required: true
+          description: Post id
+          schema:
+            type: string
+      responses:
+        200:
+          description: OK
+          content:
+            application/json:
+              schema:
+                allOf:
+                  - $ref: "#/components/schemas/Post"
+                  - $ref: "#/components/schemas/PostImage"
+        404:
+          description: Not found
+        500:
+          description: Server error
+
+  /posts/{user_id}:
+    get:
+      summary: Get bunch of posts
+      description: Get several posts
+      tags:
+        - Posts
+      parameters:
+        - in: path
+          name: user_id
+          required: true
+          schema:
+            type: integer
+          description: User id
+        - in: query
+          name: offset
+          required: true
+          schema:
+            type: integer
+          description: The number of posts to skip before starting to collect the result set
+        - in: query
+          name: limit
+          required: true
+          schema:
+            type: integer
+          description: The numbers of posts to return
+      responses:
+        200:
+          description: OK
+          content:
+            application/json:
+              schema:
+                type: array
+                items:
+                  allOf:
+                    - $ref: "#/components/schemas/Post"
+                    - $ref: "#/components/schemas/PostImage"
+        404:
+          description: Not found
+        500:
+          description: Server error
+
+  /posts/{post_id}:
+    put:
+      summary: Update a post
+      description: Update an existing post
+      tags:
+        - Posts
+      parameters:
+        - name: post_id
+          in: path
+          required: true
+          description: Post id
+          schema:
+            type: string
+      requestBody:
+        required: true
+        content:
+          application/json:
+            schema:
+              type: object
+              properties:
+                text:
+                  type: string
+                  description: post description
+                geolocation:
+                  type: string
+                  description: post geolocation
+                user_id:
+                  type: string
+                  description: user_id
+            examples:
+              request:
+                value:
+                  text: "Adventure description"
+                  geolocation: "51.51415,-0.11473"
+                  user_id: "674"
+          multipart/form:
+            schema:
+              type: object
+              properties:
+                image:
+                  type: string
+                  format: binary
+      responses:
+        200:
+          description: OK
+          content:
+            application/json:
+              schema:
+                type: object
+                properties:
+                  id:
+                    type: string
+                    description: id of the updated post
+                required:
+                  - id
+              examples:
+                response:
+                  value:
+                    id: "67687sde432d"
+        400:
+          description: Bad Request
+        500:
+          description: Server error
+
+  /posts/{remove_post_id}:
+    delete:
+      summary: Delete a post
+      description: Delete an existing post
+      tags:
+        - Posts
+      parameters:
+        - name: remove_post_id
+          in: path
+          required: true
+          description: Post id
+          schema:
+            type: string
+      responses:
+        200:
+          description: OK
+          content:
+            application/json:
+              schema:
+                type: object
+                properties:
+                  id:
+                    type: string
+                    description: id of the deleted post
+                required:
+                  - id
+              examples:
+                response:
+                  value:
+                    id: "67687sde432d"
+        404:
+          description: Not found
+        500:
+          description: Server error
+
+  /subscriptions/{subscriber_id}:
+    get:
+      summary: Get subscriptions
+      description: Get all user's subscriptions
+      tags:
+        - Subscriptions
+      parameters:
+        - name: subscriber_id
+          in: path
+          required: true
+          description: Subscriber id
+          schema:
+            type: string
+      responses:
+        200:
+          description: OK
+          content:
+            application/json:
+              schema:
+                type: array
+                items:
+                  properties:
+                    subscription_id:
+                      type: string
+        404:
+          description: Not found
+        500:
+          description: Server error
+
+  /subscriptions:
+    post:
+      summary: Subscribe to a user
+      description: Subscribe to a new user
+      tags:
+        - Subscriptions
+      requestBody:
+        required: true
+        content:
+          application/json:
+            schema:
+              type: object
+              properties:
+                subscriber_id:
+                  type: string
+                  description: Subscriber id
+                subscription_id:
+                  type: string
+                  description: Subscription id
+              required:
+                - subscriber_id
+                - subscription_id
+      responses:
+        200:
+          description: OK
+          content:
+            application/json:
+              schema:
+                type: object
+                properties:
+                  subscription_id:
+                    type: string
+        404:
+          description: Not found
+        500:
+          description: Server error
+
+  /subscriptions/{subscriber_id}/{subscription_id}:
+    delete:
+      summary: Unsubscribe from a user
+      description: Unsubscribe from a user
+      tags:
+        - Subscriptions
+      parameters:
+        - name: subscriber_id
+          in: path
+          required: true
+          description: Subscriber id
+          schema:
+            type: string
+        - name: subscription_id
+          in: path
+          required: true
+          description: Subscription id
+          schema:
+            type: string
+      responses:
+        200:
+          description: OK
+          content:
+            application/json:
+              schema:
+                type: object
+                properties:
+                  subscription_id:
+                    type: string
+        404:
+          description: Not found
+        500:
+          description: Server error
+
+  /comments:
+    post:
+      summary: Create a comment
+      description: Method creates a comment
+      tags:
+        - Comments
+      requestBody:
+        required: true
+        content:
+          application/json:
+            schema:
+              type: object
+              properties:
+                text:
+                  type: string
+                  description: Comment text
+                user_id:
+                  type: string
+                  description: A comment owner
+                post_id:
+                  type: string
+                  description: Post id
+              required:
+                - text
+                - user_id
+                - post_id
+            examples:
+              request:
+                value:
+                  text: "Comment text"
+                  post_id: "88834r99"
+                  user_id: "674"
+      responses:
+        200:
+          description: OK
+          content:
+            application/json:
+              schema:
+                type: object
+                properties:
+                  id:
+                    type: string
+                    description: id of the created comment
+                required:
+                  - id
+              examples:
+                response:
+                  value:
+                    id: "989897gh4729y"
+        400:
+          description: Bad Request
+        500:
+          description: Server error
+
+  /comments/{post_id}:
+    get:
+      summary: Get bunch of comments
+      description: Get several comments
+      tags:
+        - Comments
+      parameters:
+        - name: post_id
+          in: path
+          required: true
+          description: Post id
+          schema:
+            type: string
+        - in: query
+          name: offset
+          required: true
+          schema:
+            type: integer
+          description: The number of comments to skip before starting to collect the result set
+        - in: query
+          name: limit
+          required: true
+          schema:
+            type: integer
+          description: The numbers of comments to return
+      responses:
+        200:
+          description: OK
+          content:
+            application/json:
+              schema:
+                type: array
+                items:
+                  properties:
+                    id:
+                      type: string
+                      description: comment id
+                    post_id:
+                      type: string
+                      description: Post id
+                    text:
+                      type: string
+                      description: Comment text
+        404:
+          description: Not found
+        500:
+          description: Server error
+
+  /comments/{id}:
+    put:
+      summary: Update a comment
+      description: Update an existing comment
+      tags:
+        - Comments
+      parameters:
+        - name: id
+          in: path
+          required: true
+          description: Comment id
+          schema:
+            type: string
+      requestBody:
+        required: true
+        content:
+          application/json:
+            schema:
+              type: object
+              properties:
+                text:
+                  type: string
+                  description: Comment text
+            examples:
+              request:
+                value:
+                  text: "New comment text"
+      responses:
+        200:
+          description: OK
+          content:
+            application/json:
+              schema:
+                type: object
+                properties:
+                  id:
+                    type: string
+                    description: id of the updated comment
+                required:
+                  - id
+              examples:
+                response:
+                  value:
+                    id: "67687sde432d"
+        400:
+          description: Bad Request
+        500:
+          description: Server error
+
+  /comments/{remove_post_id}:
+    delete:
+      summary: Delete a comment
+      description: Delete an existing comment
+      tags:
+        - Comments
+      parameters:
+        - name: remove_post_id
+          in: path
+          required: true
+          description: Comment id
+          schema:
+            type: string
+      responses:
+        200:
+          description: OK
+          content:
+            application/json:
+              schema:
+                type: object
+                properties:
+                  id:
+                    type: string
+                    description: id of the deleted comment
+                required:
+                  - id
+              examples:
+                response:
+                  value:
+                    id: "fg435hgh"
+        404:
+          description: Not found
+        500:
+          description: Server error
+
+  /ratings:
+    post:
+      summary: Add a rating
+      description: Method creates a post rating
+      tags:
+        - Ratings
+      requestBody:
+        required: true
+        content:
+          application/json:
+            schema:
+              type: object
+              properties:
+                value:
+                  type: string
+                  description: Rating value
+                user_id:
+                  type: string
+                  description: A user who rates
+                post_id:
+                  type: string
+                  description: Post id
+              required:
+                - value
+                - user_id
+                - post_id
+            examples:
+              request:
+                value:
+                  value: "4"
+                  post_id: "578jhk5"
+                  user_id: "896"
+      responses:
+        200:
+          description: OK
+          content:
+            application/json:
+              schema:
+                type: object
+                properties:
+                  id:
+                    type: string
+                    description: id of the rated post
+                required:
+                  - id
+              examples:
+                response:
+                  value:
+                    id: "989897gh4729y"
+        400:
+          description: Bad Request
+        500:
+          description: Server error
+
+  /ratings/{id}:
+    put:
+      summary: Update a rating
+      description: Update an existing rating
+      tags:
+        - Ratings
+      parameters:
+        - name: id
+          in: path
+          required: true
+          description: Post id
+          schema:
+            type: string
+      requestBody:
+        required: true
+        content:
+          application/json:
+            schema:
+              type: object
+              properties:
+                value:
+                  type: string
+                  description: rating value
+            examples:
+              request:
+                value:
+                  value: "5"
+      responses:
+        200:
+          description: OK
+          content:
+            application/json:
+              schema:
+                type: object
+                properties:
+                  id:
+                    type: string
+                    description: id of the updated post
+                required:
+                  - id
+              examples:
+                response:
+                  value:
+                    id: "fgdfg3435gfg"
+        400:
+          description: Bad Request
+        500:
+          description: Server error
+
+  /ratings/{remove_rating_id}:
+    delete:
+      summary: Delete a rating
+      description: Delete an existing rating
+      tags:
+        - Ratings
+      parameters:
+        - name: remove_rating_id
+          in: path
+          required: true
+          description: Post id
+          schema:
+            type: string
+      responses:
+        200:
+          description: OK
+          content:
+            application/json:
+              schema:
+                type: object
+                properties:
+                  id:
+                    type: string
+                    description: id of the post
+                required:
+                  - id
+              examples:
+                response:
+                  value:
+                    id: "67687sde432d"
+        404:
+          description: Not found
+        500:
+          description: Server error
+
+components:
+  schemas:
+    Post:
+      type: object
+      properties:
+        text:
+          type: string
+          description: post description
+        geolocation:
+          type: string
+          description: post geolocation
+        user_id:
+          type: string
+          description: user_id
+    PostImage:
+      type: object
+      properties:
+        image:
+          type: string
+          format: binary
+    Comment:
+      type: object
+      properties:
+        id:
+          type: string
+          description: comment id
+        post_id:
+          type: string
+          description: Post id
+        text:
+          type: string
+          description: Comment text
