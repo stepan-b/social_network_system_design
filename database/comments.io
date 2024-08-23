@@ -3,7 +3,7 @@
 // - replication factor 3
 //
 // Sharding:
-// - key based by user_id
+// - key based by post_id
 
 // PostgreSQL
 

@@ -7,9 +7,8 @@
 
 // PostgreSQL
 
-Table ratings {
-  post_id string
-  user_id string
-  rating string
+Table subscriptions {
+  user_id string [pk, note: 'User ID']
+  subscriptions string [note: 'List of users ids(subscriptions)']
   created_at timestamp [default: 'now()']
 }
