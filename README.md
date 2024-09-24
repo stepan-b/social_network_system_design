@@ -92,3 +92,29 @@ Peak Load - Rating_write:
     2315 * 50byte = 116 Kb/s
 
 **Read oriented system**
+
+Required memory:
+
+    Posts
+
+    Replication factor = 3
+    Service operation time = 1 year
+    Сapacity = 75 MB/s(average traffic, considering peaks) * 86 400 * 365 = 2PB
+    Disks_for_capacity = 2 / 0.1 = 20
+    Disks_for_throughput = 75MB/s / 500MB/s = 0.15
+    Disks_for_iops = 9500 / 1000 = 9.5
+    Disks = max(ceil(20), ceil(0.15), ceil(9.5)) = 20
+
+    20 SSD (SATA)
+
+    Comments
+
+    Replication factor = 3
+    Service operation time = 1 year
+    Сapacity = 95 KB/s(average traffic, considering peaks) * 86 400 * 365 = 3TB
+    Disks_for_capacity = 3 / 32 = 0.09
+    Disks_for_throughput = 0.09MB/s / 100MB/s = 0.0009 
+    Disks_for_iops = 700 / 100 = 7
+    Disks = max(ceil(0.09), ceil(0.0009), ceil(7)) = 7
+
+    7 HDD
